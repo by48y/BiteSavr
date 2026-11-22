@@ -1,0 +1,97 @@
+@extends('layouts.mitra')
+@section('title', 'Edit Produk | Mitra BiteSavr')
+@section('content')
+
+<div class="ph">
+    <div><h1>Edit Produk</h1><p>{{ $product->nama_produk }}</p></div>
+    <a href="{{ route('mitra.products.index') }}" class="btn" style="height:38px;line-height:38px;padding:0 18px">← Kembali</a>
+</div>
+
+@if($errors->any())
+<div style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:14px 18px;border-radius:12px;margin-bottom:16px;font-size:14px">
+    <ul style="margin:0 0 0 18px">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+</div>
+@endif
+
+<div class="card" style="max-width:680px">
+    <form method="POST" action="{{ route('mitra.products.update', $product) }}" enctype="multipart/form-data">
+        @csrf @method('PUT')
+        <div class="g g2" style="gap:16px;margin-bottom:16px">
+            <div>
+                <label class="lbl-f">Nama Produk *</label>
+                <input type="text" name="nama_produk" value="{{ old('nama_produk', $product->nama_produk) }}" required class="inp-f">
+            </div>
+            <div>
+                <label class="lbl-f">Kategori *</label>
+                <select name="kategori" required class="inp-f">
+                    <option value="nasi" @selected(old('kategori', $product->kategori)=='nasi')>🍛 Nasi & Lauk</option>
+                    <option value="roti_kue" @selected(old('kategori', $product->kategori)=='roti_kue')>🥐 Roti & Kue</option>
+                    <option value="seafood" @selected(old('kategori', $product->kategori)=='seafood')>🍤 Seafood</option>
+                    <option value="minuman" @selected(old('kategori', $product->kategori)=='minuman')>☕ Minuman</option>
+                    <option value="mie" @selected(old('kategori', $product->kategori)=='mie')>🍜 Mie & Pasta</option>
+                    <option value="lainnya" @selected(old('kategori', $product->kategori)=='lainnya')>🍱 Lainnya</option>
+                </select>
+            </div>
+        </div>
+        <div style="margin-bottom:16px">
+            <label class="lbl-f">Deskripsi Produk <small style="color:var(--muted);font-weight:400">(opsional)</small></label>
+            <textarea name="deskripsi" class="inp-f" rows="2">{{ old('deskripsi', $product->deskripsi) }}</textarea>
+        </div>
+        <div class="g g2" style="gap:16px;margin-bottom:16px">
+            <div>
+                <label class="lbl-f">Harga Normal (Rp) *</label>
+                <input type="number" name="harga_asli" value="{{ old('harga_asli', $product->harga_asli) }}" required min="0" class="inp-f">
+            </div>
+            <div>
+                <label class="lbl-f">Harga Jual / Diskon (Rp) *</label>
+                <input type="number" name="harga_diskon" value="{{ old('harga_diskon', $product->harga_diskon) }}" required min="0" class="inp-f">
+            </div>
+        </div>
+        <div class="g g2" style="gap:16px;margin-bottom:16px">
+            <div>
+                <label class="lbl-f">Stok *</label>
+                <input type="number" name="stok" value="{{ old('stok', $product->stok) }}" required min="0" class="inp-f">
+            </div>
+            <div>
+                <label class="lbl-f">Status *</label>
+                <select name="status" class="inp-f">
+                    <option value="tersedia" @selected(old('status',$product->status)=='tersedia')>Tersedia</option>
+                    <option value="habis" @selected(old('status',$product->status)=='habis')>Stok Habis</option>
+                    <option value="kadaluarsa" @selected(old('status',$product->status)=='kadaluarsa')>Kadaluarsa</option>
+                    <option value="nonaktif" @selected(old('status',$product->status)=='nonaktif')>Nonaktif</option>
+                </select>
+            </div>
+        </div>
+        <div style="margin-bottom:16px">
+            <label class="lbl-f">Titik Penjemputan *</label>
+            <input type="text" name="titik_penjemputan" value="{{ old('titik_penjemputan', $product->titik_penjemputan) }}" required class="inp-f">
+        </div>
+        <div style="margin-bottom:16px">
+            <label class="lbl-f">Batas Waktu Konsumsi *</label>
+            <input type="datetime-local" name="batas_waktu_konsumsi"
+                value="{{ old('batas_waktu_konsumsi', $product->batas_waktu_konsumsi?->format('Y-m-d\TH:i')) }}" required class="inp-f">
+        </div>
+        @if($product->foto)
+        <div style="margin-bottom:12px">
+            <label class="lbl-f">Foto Saat Ini</label>
+            <img src="{{ Storage::url($product->foto) }}" alt="Foto produk" style="height:80px;border-radius:8px;object-fit:cover">
+        </div>
+        @endif
+        <div style="margin-bottom:16px">
+            <label class="lbl-f">Ganti Foto <small style="color:var(--muted);font-weight:400">(opsional)</small></label>
+            <input type="file" name="foto" accept="image/*" class="inp-f" style="padding:7px">
+        </div>
+        <div style="display:flex;gap:10px">
+            <button type="submit" class="btn pri">Simpan Perubahan</button>
+            <a href="{{ route('mitra.products.index') }}" class="btn">Batal</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.lbl-f{display:block;font-size:13px;font-weight:600;margin-bottom:5px;color:var(--tx)}
+.inp-f{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--tx);font-size:14px;font-family:inherit}
+.inp-f:focus{outline:none;border-color:var(--acc)}
+</style>
+
+@endsection
